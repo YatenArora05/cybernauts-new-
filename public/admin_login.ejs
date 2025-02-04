@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+</head>
+<style>
+  label{
+          color: white;
+        }
+  input
+        {
+          height: 20px;
+          background-color: black;
+          color: white;
+          border: white solid 2px ;
+          border-radius: 5px;
+        }
+</style>
+<body style="background-color: black;">
+  
+  <center>
+    <h1 style="color: white;">Admin Login</h1>
+
+    <!-- <input type="password" id="adminPassword" placeholder="Enter admin password" style="background-color: black; color: white;"  required > -->
+
+    <div class="col-md-6">
+      <label for="txtPhone" class="form-label" style="font-size: 20px;">Password:  </label>
+      <input type="password" id="adminPassword" placeholder="Enter admin password" style="color: white;"  required >
+      <button onclick="fetchData()" style="height: 20px; cursor: pointer;">Show Data</button>
+    </div>
+    
+  </center>
+  <table id="dataTable" class="table" style="display: none; width: 100%; border: 1px solid white; background-color: black; color: white;">
+    <tr>
+        <nav class="navbar" style="background-color: black; width: 100%;">
+            <div class="container-fluid d-flex justify-content-center">
+                <span class="navbar-brand mb-0 h1">
+                    <h1 style="color: white;">Registered Students Data</h1>
+                </span>
+            </div>
+        </nav>
+    </tr>
+    <thead >
+        <tr style="background-color: black; color: white;">
+            <th style="border: 1px solid white;">Sr.No</th>
+            <th style="border: 1px solid white;">First Name</th>
+            <th style="border: 1px solid white;">Last Name</th>
+            <th style="border: 1px solid white;">Contact</th>
+            <th style="border: 1px solid white;">Email</th>
+            <th style="border: 1px solid white;">Branch</th>
+            <th style="border: 1px solid white;">Domain</th>
+            <th style="border: 1px solid white;">Skills</th>
+            <!-- <th>Action</th> -->
+        </tr>
+    </thead>
+    <tbody id="tableBody" style="border: 1px solid white;">
+        <tr>
+            <td colspan="8" style="text-align: center; background-color: black; color: white;">No data available</td>
+        </tr>
+    </tbody>
+</table>
+
+
+  <script>
+    async function fetchData() {
+      const password = document.getElementById('adminPassword').value;
+      const response = await fetch('/admin_login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: password })
+      });
+
+      if (!response.ok) {
+        alert('Invalid Password!');
+        return;
+      }
+ 
+      const data = await response.json();
+      const tableBody = document.getElementById('tableBody');
+
+      tableBody.innerHTML = ''; // Clear existing data
+
+      data.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td style="border: 1px solid white;">${index + 1}</td>
+          <td style="border: 1px solid white;">${item.firstName}</td>
+          <td style="border: 1px solid white;">${item.lastName}</td>
+          <td style="border: 1px solid white;">${item.phone}</td>
+          <td style="border: 1px solid white;">${item.email}</td>
+          <td style="border: 1px solid white;">${item.branch}</td>
+          <td style="border: 1px solid white;">${item.domain}</td>
+          <td style="border: 1px solid white;">${item.skills}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+
+      document.getElementById('dataTable').style.display = 'table'; // Show the table
+    }
+  </script>
+</body>
+</html>
+
+<!-- <td>
+  <button style="color: white; background-color: red; border: white solid 1px; border-radius: 5px;">Delete</button>
+</td> -->
